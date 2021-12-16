@@ -11,4 +11,5 @@ message NavMeshFileInfo
 {
   repeated Point vertices = 1;
   repeated int32 indices  = 2;
+  repeated int32 lines    = 3;
 }

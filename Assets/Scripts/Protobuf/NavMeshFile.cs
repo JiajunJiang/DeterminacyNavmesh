@@ -23,13 +23,14 @@ public static partial class NavMeshFileReflection {
     byte[] descriptorData = global::System.Convert.FromBase64String(
         string.Concat(
           "ChFOYXZNZXNoRmlsZS5wcm90byIoCgVQb2ludBIJCgF4GAEgASgDEgkKAXkY",
-          "AiABKAMSCQoBehgDIAEoAyI8Cg9OYXZNZXNoRmlsZUluZm8SGAoIdmVydGlj",
-          "ZXMYASADKAsyBi5Qb2ludBIPCgdpbmRpY2VzGAIgAygFYgZwcm90bzM="));
+          "AiABKAMSCQoBehgDIAEoAyJLCg9OYXZNZXNoRmlsZUluZm8SGAoIdmVydGlj",
+          "ZXMYASADKAsyBi5Qb2ludBIPCgdpbmRpY2VzGAIgAygFEg0KBWxpbmVzGAMg",
+          "AygFYgZwcm90bzM="));
     descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
         new pbr::FileDescriptor[] { },
         new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
           new pbr::GeneratedClrTypeInfo(typeof(global::Point), global::Point.Parser, new[]{ "X", "Y", "Z" }, null, null, null, null),
-          new pbr::GeneratedClrTypeInfo(typeof(global::NavMeshFileInfo), global::NavMeshFileInfo.Parser, new[]{ "Vertices", "Indices" }, null, null, null, null)
+          new pbr::GeneratedClrTypeInfo(typeof(global::NavMeshFileInfo), global::NavMeshFileInfo.Parser, new[]{ "Vertices", "Indices", "Lines" }, null, null, null, null)
         }));
   }
   #endregion
@@ -335,6 +336,7 @@ public sealed partial class NavMeshFileInfo : pb::IMessage<NavMeshFileInfo>
   public NavMeshFileInfo(NavMeshFileInfo other) : this() {
     vertices_ = other.vertices_.Clone();
     indices_ = other.indices_.Clone();
+    lines_ = other.lines_.Clone();
     _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
   }
 
@@ -366,6 +368,17 @@ public sealed partial class NavMeshFileInfo : pb::IMessage<NavMeshFileInfo>
     get { return indices_; }
   }
 
+  /// <summary>Field number for the "lines" field.</summary>
+  public const int LinesFieldNumber = 3;
+  private static readonly pb::FieldCodec<int> _repeated_lines_codec
+      = pb::FieldCodec.ForInt32(26);
+  private readonly pbc::RepeatedField<int> lines_ = new pbc::RepeatedField<int>();
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public pbc::RepeatedField<int> Lines {
+    get { return lines_; }
+  }
+
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public override bool Equals(object other) {
@@ -383,6 +396,7 @@ public sealed partial class NavMeshFileInfo : pb::IMessage<NavMeshFileInfo>
     }
     if(!vertices_.Equals(other.vertices_)) return false;
     if(!indices_.Equals(other.indices_)) return false;
+    if(!lines_.Equals(other.lines_)) return false;
     return Equals(_unknownFields, other._unknownFields);
   }
 
@@ -392,6 +406,7 @@ public sealed partial class NavMeshFileInfo : pb::IMessage<NavMeshFileInfo>
     int hash = 1;
     hash ^= vertices_.GetHashCode();
     hash ^= indices_.GetHashCode();
+    hash ^= lines_.GetHashCode();
     if (_unknownFields != null) {
       hash ^= _unknownFields.GetHashCode();
     }
@@ -412,6 +427,7 @@ public sealed partial class NavMeshFileInfo : pb::IMessage<NavMeshFileInfo>
   #else
     vertices_.WriteTo(output, _repeated_vertices_codec);
     indices_.WriteTo(output, _repeated_indices_codec);
+    lines_.WriteTo(output, _repeated_lines_codec);
     if (_unknownFields != null) {
       _unknownFields.WriteTo(output);
     }
@@ -424,6 +440,7 @@ public sealed partial class NavMeshFileInfo : pb::IMessage<NavMeshFileInfo>
   void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
     vertices_.WriteTo(ref output, _repeated_vertices_codec);
     indices_.WriteTo(ref output, _repeated_indices_codec);
+    lines_.WriteTo(ref output, _repeated_lines_codec);
     if (_unknownFields != null) {
       _unknownFields.WriteTo(ref output);
     }
@@ -436,6 +453,7 @@ public sealed partial class NavMeshFileInfo : pb::IMessage<NavMeshFileInfo>
     int size = 0;
     size += vertices_.CalculateSize(_repeated_vertices_codec);
     size += indices_.CalculateSize(_repeated_indices_codec);
+    size += lines_.CalculateSize(_repeated_lines_codec);
     if (_unknownFields != null) {
       size += _unknownFields.CalculateSize();
     }
@@ -450,6 +468,7 @@ public sealed partial class NavMeshFileInfo : pb::IMessage<NavMeshFileInfo>
     }
     vertices_.Add(other.vertices_);
     indices_.Add(other.indices_);
+    lines_.Add(other.lines_);
     _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
   }
 
@@ -474,6 +493,11 @@ public sealed partial class NavMeshFileInfo : pb::IMessage<NavMeshFileInfo>
           indices_.AddEntriesFrom(input, _repeated_indices_codec);
           break;
         }
+        case 26:
+        case 24: {
+          lines_.AddEntriesFrom(input, _repeated_lines_codec);
+          break;
+        }
       }
     }
   #endif
@@ -496,6 +520,11 @@ public sealed partial class NavMeshFileInfo : pb::IMessage<NavMeshFileInfo>
         case 18:
         case 16: {
           indices_.AddEntriesFrom(ref input, _repeated_indices_codec);
+          break;
+        }
+        case 26:
+        case 24: {
+          lines_.AddEntriesFrom(ref input, _repeated_lines_codec);
           break;
         }
       }
