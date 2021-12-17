@@ -9,9 +9,9 @@ public struct Point3D : IEquatable<Point3D>
     public long x;
     public long y;
     public long z;
-    
+
     public long Magnitude => FixedMath.Sqrt(x * x + y * y + z * z);
-    
+
     public Point2D XZ => new Point2D(x, z);
 
     public Point3D(long x, long y, long z)
@@ -23,9 +23,9 @@ public struct Point3D : IEquatable<Point3D>
 
     public Point3D(Vector3 vector3)
     {
-        this.x = (int)vector3.x;
-        this.y = (int)vector3.y;
-        this.z = (int)vector3.z;
+        this.x = (int) vector3.x;
+        this.y = (int) vector3.y;
+        this.z = (int) vector3.z;
     }
 
     public static Point3D operator +(Point3D l, Point3D r)
@@ -76,7 +76,7 @@ public struct Point3D : IEquatable<Point3D>
             l.x * r.y - l.y * r.x
         );
     }
-    
+
     public bool Equals(Point3D other)
     {
         return x == other.x && y == other.y && z == other.z;

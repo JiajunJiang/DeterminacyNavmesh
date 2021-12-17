@@ -11,15 +11,15 @@ namespace DefaultNamespace
         }
 
         public int Precision;
-        public int Speed;
-        public int FramePerSpeed;
+        public int Speed = 5000;
+        public int FramePerSpeed = 25;
         private int length;
-        
+
         /// <summary>
         /// 逻辑层目的地位置
         /// </summary>
         public Point3D destination { get; private set; }
-        
+
         /// <summary>
         /// 逻辑层当前位置
         /// </summary>
@@ -33,7 +33,7 @@ namespace DefaultNamespace
             length = 0;
             path = NavmeshSystem.Instance.CalculatePath(localtion, destination);
         }
-        
+
         public void SetLocation(Point3D loca)
         {
             localtion = loca;
@@ -41,7 +41,7 @@ namespace DefaultNamespace
             length = 0;
             path = null;
         }
-        
+
         private void FixedUpdate()
         {
             length += Speed / FramePerSpeed;
@@ -55,9 +55,10 @@ namespace DefaultNamespace
                         localtion = path[i - 1] + (path[i] - path[i - 1]) * (length - len) / secLen;
                         break;
                     }
+
                     len += secLen;
                 }
-            
+
             var pos = localtion.ToUnityVector3() / NavmeshSystem.Precision;
 
             //todo 贴地

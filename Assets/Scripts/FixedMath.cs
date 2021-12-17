@@ -50,12 +50,10 @@ namespace DefaultNamespace
 
             return crossAB * crossBC >= 0 && crossBC * crossCA >= 0;
         }
-        
+
         public static bool IsInTriangleXZ(Point3D a, Point3D b, Point3D c, Point3D p)
         {
             return IsInTriangle(a.XZ, b.XZ, c.XZ, p.XZ);
         }
-        
-        
     }
 }

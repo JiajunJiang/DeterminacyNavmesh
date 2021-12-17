@@ -10,7 +10,7 @@ namespace DefaultNamespace
         /// Same to Editor Precision
         /// </summary>
         public static int Precision = 100;
-        
+
         public Point3D[] vertices;
         public int[] indices;
         public int[] lines;
@@ -40,7 +40,7 @@ namespace DefaultNamespace
                 var line = info.Lines[index];
                 lines[index] = line;
             }
-            
+
             InitNodes();
         }
 
@@ -59,6 +59,7 @@ namespace DefaultNamespace
                 {
                     count++;
                 }
+
                 if (a == e) count++;
                 if (a == f) count++;
                 if (b == d) count++;
@@ -74,7 +75,7 @@ namespace DefaultNamespace
                 nodes[j].surrounds.Add(nodes[i]);
             });
         }
-        
+
         private void CalculateTriangle(Action<int, int, int> action)
         {
             for (int i = 0; i < indices.Length; i += 3)
@@ -88,7 +89,8 @@ namespace DefaultNamespace
             for (int i = 0; i < indices.Length - 3; i += 3)
             for (int j = i + 3; j < indices.Length; j += 3)
             {
-                if (action(indices[i + 0], indices[i + 1], indices[i + 2], indices[j + 0], indices[j + 1], indices[j + 2]))
+                if (action(indices[i + 0], indices[i + 1], indices[i + 2], indices[j + 0], indices[j + 1],
+                    indices[j + 2]))
                 {
                     action2(i / 3, j / 3);
                 }
@@ -99,13 +101,13 @@ namespace DefaultNamespace
         {
             int startTriangleIndex = -1;
             int endTriangleIndex = -1;
-            
+
             if (!IsPointInMesh(from, out startTriangleIndex))
             {
                 Debug.LogError("Start Point is out of mesh");
                 return null;
             }
-            
+
             if (!IsPointInMesh(to, out endTriangleIndex))
             {
                 Debug.LogError("End Point is out of mesh");
@@ -116,16 +118,15 @@ namespace DefaultNamespace
             var nodeTo = nodes[endTriangleIndex / 3];
             var nodePath = AStarPathSearch(nodeFrom, nodeTo);
             return OptimizePath(nodePath, from, to);
-
         }
 
         private List<Point3D> path = new List<Point3D>(64);
-        
+
         private Point3D[] tempNodePoint3D = new Point3D[2];
         Point3D tempPoint1;
         Point3D tempPoint2;
-        
-        private List<Point3D> OptimizePath(List<Node> nodePath, Point3D from , Point3D to)
+
+        private List<Point3D> OptimizePath(List<Node> nodePath, Point3D from, Point3D to)
         {
             path.Clear();
             bool isNewEye = true;
@@ -137,7 +138,7 @@ namespace DefaultNamespace
 
             var triangleIndex1 = 0;
             var triangleIndex2 = 0;
-            
+
             for (int i = 0; i < nodePath.Count; i++)
             {
                 if (i == nodePath.Count - 1)
@@ -147,7 +148,7 @@ namespace DefaultNamespace
                 }
                 else
                 {
-                    GetSharedPoints(nodePath[i].index, nodePath[i + 1].index, eye,out tempPoint1,out tempPoint2);
+                    GetSharedPoints(nodePath[i].index, nodePath[i + 1].index, eye, out tempPoint1, out tempPoint2);
                     tempNodePoint3D[0] = tempPoint1;
                     tempNodePoint3D[1] = tempPoint2;
                 }
@@ -161,12 +162,13 @@ namespace DefaultNamespace
 
                     p1 = tempNodePoint3D[0] - eye;
                     p2 = tempNodePoint3D[1] - eye;
-                    
+
                     if (Point2D.Cross_XZ(p1, p2) == 0)
                         continue;
                     isNewEye = false;
                     continue;
                 }
+
                 n2 = tempNodePoint3D[0] - eye;
                 n1 = tempNodePoint3D[1] - eye;
 
@@ -180,6 +182,7 @@ namespace DefaultNamespace
                     p1 = n2;
                     triangleIndex1 = i;
                 }
+
                 if (p1N1 >= 0 && n1P2 >= 0)
                 {
                     p2 = n1;
@@ -193,6 +196,7 @@ namespace DefaultNamespace
                     isNewEye = true;
                     continue;
                 }
+
                 if (p1N1 < 0)
                 {
                     eye = eye + p1;
@@ -200,16 +204,15 @@ namespace DefaultNamespace
                     isNewEye = true;
                     continue;
                 }
-
             }
-           
+
             path.Add(to);
             return path;
         }
-        
+
         List<int> tempSharedPoints = new List<int>(3);
-        
-        void GetSharedPoints(int a, int b, Point3D eye,out Point3D point1,out Point3D point2)
+
+        void GetSharedPoints(int a, int b, Point3D eye, out Point3D point1, out Point3D point2)
         {
             tempSharedPoints.Clear();
             var a3 = a * 3;
@@ -225,6 +228,7 @@ namespace DefaultNamespace
                     }
                 }
             }
+
             var e = indices[a3] ^ indices[a3 + 1] ^ indices[a3 + 2] ^ tempSharedPoints[0] ^ tempSharedPoints[1];
             eye = vertices[e];
             var p1 = vertices[tempSharedPoints[0]];
@@ -245,16 +249,18 @@ namespace DefaultNamespace
         {
             for (int i = 0; i < indices.Length; i += 3)
             {
-                if (FixedMath.IsInTriangleXZ(vertices[indices[i + 0]], vertices[indices[i + 1]], vertices[indices[i + 2]], p))
+                if (FixedMath.IsInTriangleXZ(vertices[indices[i + 0]], vertices[indices[i + 1]],
+                    vertices[indices[i + 2]], p))
                 {
                     triangleIndex = i;
                     return true;
                 }
             }
+
             triangleIndex = -1;
             return false;
         }
-        
+
         List<Node> openList = new List<Node>(64);
         List<Node> closeList = new List<Node>(64);
         public List<Node> nodePath = new List<Node>(64);
@@ -277,12 +283,14 @@ namespace DefaultNamespace
                         nodePath.Insert(0, node);
                         node = node.parent;
                     }
+
                     nodePath.Insert(0, nodeFrom);
                     return nodePath;
                 }
+
                 foreach (var ns in node.GetSurround())
                 {
-                    if (closeList.Contains(ns)) 
+                    if (closeList.Contains(ns))
                         continue;
                     if (openList.Contains(ns))
                     {
@@ -292,19 +300,21 @@ namespace DefaultNamespace
                             node.parent = ns;
                             node.G = newDist;
                         }
+
                         continue;
                     }
+
                     ns.G = node.G + ns.GetDistance(node);
                     ns.H = ns.GetDistance(nodeTo);
                     ns.parent = node;
                     openList.Add(ns);
                 }
+
                 openList.RemoveAt(0);
                 closeList.Add(node);
             }
+
             return null;
         }
-
-
     }
 }
