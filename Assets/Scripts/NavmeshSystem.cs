@@ -286,17 +286,17 @@ namespace DefaultNamespace
                         continue;
                     if (openList.Contains(ns))
                     {
-                        var newDist = ns.G + ns.GetDistance(ns);
-                        if (ns.G > newDist)
+                        var newDist = ns.G + ns.GetDistance(node);
+                        if (node.G > newDist)
                         {
-                            ns.parent = ns;
-                            ns.G = newDist;
+                            node.parent = ns;
+                            node.G = newDist;
                         }
                         continue;
                     }
-                    ns.G += ns.GetDistance(ns);
+                    ns.G = node.G + ns.GetDistance(node);
                     ns.H = ns.GetDistance(nodeTo);
-                    ns.parent = ns;
+                    ns.parent = node;
                     openList.Add(ns);
                 }
                 openList.RemoveAt(0);

@@ -12,5 +12,10 @@ namespace DefaultNamespace
         public override bool Equals(object other) =>
             (p1 == ((LineSegment)other).p1 && p2 == ((LineSegment)other).p2) ||
             (p1 == ((LineSegment)other).p2 && p2 == ((LineSegment)other).p1);
+
+        public override int GetHashCode()
+        {
+            return p1 * p2;
+        }
     }
 }
