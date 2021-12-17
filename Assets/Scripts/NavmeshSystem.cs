@@ -82,8 +82,8 @@ namespace DefaultNamespace
                 action(indices[i + 0], indices[i + 1], indices[i + 2]);
             }
         }
-        
-        void Calculate2Triangle(Func<int, int, int, int, int, int, bool> action, Action<int, int> action2)
+
+        private void Calculate2Triangle(Func<int, int, int, int, int, int, bool> action, Action<int, int> action2)
         {
             for (int i = 0; i < indices.Length - 3; i += 3)
             for (int j = i + 3; j < indices.Length; j += 3)
@@ -94,5 +94,217 @@ namespace DefaultNamespace
                 }
             }
         }
+
+        public List<Point3D> CalculatePath(Point3D from, Point3D to)
+        {
+            int startTriangleIndex = -1;
+            int endTriangleIndex = -1;
+            
+            if (!IsPointInMesh(from, out startTriangleIndex))
+            {
+                Debug.LogError("Start Point is out of mesh");
+                return null;
+            }
+            
+            if (!IsPointInMesh(to, out endTriangleIndex))
+            {
+                Debug.LogError("End Point is out of mesh");
+                return null;
+            }
+
+            var nodeFrom = nodes[startTriangleIndex / 3];
+            var nodeTo = nodes[endTriangleIndex / 3];
+            var nodePath = AStarPathSearch(nodeFrom, nodeTo);
+            return OptimizePath(nodePath, from, to);
+
+        }
+
+        private List<Point3D> path = new List<Point3D>(64);
+        
+        private Point3D[] tempNodePoint3D = new Point3D[2];
+        Point3D tempPoint1;
+        Point3D tempPoint2;
+        
+        private List<Point3D> OptimizePath(List<Node> nodePath, Point3D from , Point3D to)
+        {
+            path.Clear();
+            bool isNewEye = true;
+            Point3D eye, p1, p2;
+            Point3D n1, n2;
+            eye = from;
+            p1 = eye;
+            p2 = eye;
+
+            var triangleIndex1 = 0;
+            var triangleIndex2 = 0;
+            
+            for (int i = 0; i < nodePath.Count; i++)
+            {
+                if (i == nodePath.Count - 1)
+                {
+                    tempNodePoint3D[0] = to;
+                    tempNodePoint3D[1] = to;
+                }
+                else
+                {
+                    GetSharedPoints(nodePath[i].index, nodePath[i + 1].index, eye,out tempPoint1,out tempPoint2);
+                    tempNodePoint3D[0] = tempPoint1;
+                    tempNodePoint3D[1] = tempPoint2;
+                }
+
+                if (isNewEye)
+                {
+                    if (tempNodePoint3D[0].Equals(eye) || tempNodePoint3D[1].Equals(eye))
+                        continue;
+
+                    path.Add(eye);
+
+                    p1 = tempNodePoint3D[0] - eye;
+                    p2 = tempNodePoint3D[1] - eye;
+                    
+                    if (Point2D.Cross_XZ(p1, p2) == 0)
+                        continue;
+                    isNewEye = false;
+                    continue;
+                }
+                n2 = tempNodePoint3D[0] - eye;
+                n1 = tempNodePoint3D[1] - eye;
+
+                var p1N2 = Point2D.Cross_XZ(p1, n2);
+                var n2P2 = Point2D.Cross_XZ(n2, p2);
+                var p1N1 = Point2D.Cross_XZ(p1, n1);
+                var n1P2 = Point2D.Cross_XZ(n1, p2);
+
+                if (p1N2 >= 0 && n2P2 >= 0)
+                {
+                    p1 = n2;
+                    triangleIndex1 = i;
+                }
+                if (p1N1 >= 0 && n1P2 >= 0)
+                {
+                    p2 = n1;
+                    triangleIndex2 = i;
+                }
+
+                if (n2P2 < 0)
+                {
+                    eye = eye + p2;
+                    i = triangleIndex2;
+                    isNewEye = true;
+                    continue;
+                }
+                if (p1N1 < 0)
+                {
+                    eye = eye + p1;
+                    i = triangleIndex1;
+                    isNewEye = true;
+                    continue;
+                }
+
+            }
+           
+            path.Add(to);
+            return path;
+        }
+        
+        List<int> tempSharedPoints = new List<int>(3);
+        
+        void GetSharedPoints(int a, int b, Point3D eye,out Point3D point1,out Point3D point2)
+        {
+            tempSharedPoints.Clear();
+            var a3 = a * 3;
+            var b3 = b * 3;
+            for (int i = a3; i < a3 + 3; i++)
+            {
+                for (int j = b3; j < b3 + 3; j++)
+                {
+                    if (indices[i] == indices[j])
+                    {
+                        tempSharedPoints.Add(indices[i]);
+                        break;
+                    }
+                }
+            }
+            var e = indices[a3] ^ indices[a3 + 1] ^ indices[a3 + 2] ^ tempSharedPoints[0] ^ tempSharedPoints[1];
+            eye = vertices[e];
+            var p1 = vertices[tempSharedPoints[0]];
+            var p2 = vertices[tempSharedPoints[1]];
+            if (Point2D.Cross_XZ(p1 - eye, p2 - eye) < 0)
+            {
+                point1 = p2;
+                point2 = p1;
+            }
+            else
+            {
+                point1 = p1;
+                point2 = p2;
+            }
+        }
+
+        public bool IsPointInMesh(Point3D p, out int triangleIndex)
+        {
+            for (int i = 0; i < indices.Length; i += 3)
+            {
+                if (FixedMath.IsInTriangleXZ(vertices[indices[i + 0]], vertices[indices[i + 1]], vertices[indices[i + 2]], p))
+                {
+                    triangleIndex = i;
+                    return true;
+                }
+            }
+            triangleIndex = -1;
+            return false;
+        }
+        
+        List<Node> openList = new List<Node>(64);
+        List<Node> closeList = new List<Node>(64);
+        public List<Node> nodePath = new List<Node>(64);
+
+        private List<Node> AStarPathSearch(Node nodeFrom, Node nodeTo)
+        {
+            openList.Clear();
+            closeList.Clear();
+            nodeFrom.parent = null;
+            openList.Add(nodeFrom);
+            while (openList.Count > 0)
+            {
+                openList.Sort((n1, n2) => n1.F - n2.F);
+                var node = openList[0];
+                if (node == nodeTo)
+                {
+                    nodePath.Clear();
+                    while (null != node.parent)
+                    {
+                        nodePath.Insert(0, node);
+                        node = node.parent;
+                    }
+                    nodePath.Insert(0, nodeFrom);
+                    return nodePath;
+                }
+                foreach (var ns in node.GetSurround())
+                {
+                    if (closeList.Contains(ns)) 
+                        continue;
+                    if (openList.Contains(ns))
+                    {
+                        var newDist = ns.G + ns.GetDistance(ns);
+                        if (ns.G > newDist)
+                        {
+                            ns.parent = ns;
+                            ns.G = newDist;
+                        }
+                        continue;
+                    }
+                    ns.G += ns.GetDistance(ns);
+                    ns.H = ns.GetDistance(nodeTo);
+                    ns.parent = ns;
+                    openList.Add(ns);
+                }
+                openList.RemoveAt(0);
+                closeList.Add(node);
+            }
+            return null;
+        }
+
+
     }
 }

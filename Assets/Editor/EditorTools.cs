@@ -15,7 +15,7 @@ public class NewBehaviourScript
     /// <summary>
     /// 精度
     /// </summary>
-    private static int Precision { get; } = 100;
+    private static int Precision;
 
     private static Vector3[] rawMeshVertices;
     private static int[] rawMeshIndices;
@@ -23,6 +23,7 @@ public class NewBehaviourScript
     [MenuItem("Tools/GenerateNavMesh")]
     public static void GenerateNavMesh()
     {
+        Precision = NavmeshSystem.Precision;
         var rawMesh = NavMesh.CalculateTriangulation();
         rawMeshVertices = rawMesh.vertices;
         rawMeshIndices = rawMesh.indices;
