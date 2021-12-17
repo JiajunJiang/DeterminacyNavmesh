@@ -81,4 +81,14 @@ public struct Point3D : IEquatable<Point3D>
     {
         return x == other.x && y == other.y && z == other.z;
     }
+
+    public Vector3 ToUnityVector3()
+    {
+        return new Vector3(x, y, z);
+    }
+
+    public override string ToString()
+    {
+        return $"({x},{y},{z})";
+    }
 }
