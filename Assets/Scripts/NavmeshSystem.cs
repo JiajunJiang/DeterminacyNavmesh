@@ -316,5 +316,35 @@ namespace DefaultNamespace
 
             return null;
         }
+        
+        public bool IsLineInsideMesh(Point3D p1, Point3D p2)
+        {
+            for (int i = 0; i < lines.Length; i += 2)
+            {
+                if (FixedMath.IsLineCross(vertices[lines[i + 0]].XZ, vertices[lines[i + 1]].XZ, p1.XZ, p2.XZ))
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+        
+        public bool IsLineInsideMesh(Point3D p1, Point3D p2,ref Point2D outP1,ref Point2D outP2)
+        {
+            outP1 = new Point2D();
+            outP2 = new Point2D();
+            
+            for (int i = 0; i < lines.Length; i += 2)
+            {
+                if (FixedMath.IsLineCross(vertices[lines[i + 0]].XZ, vertices[lines[i + 1]].XZ, p1.XZ, p2.XZ))
+                {
+                    outP1 = vertices[lines[i + 0]].XZ;
+                    outP2 = vertices[lines[i + 1]].XZ;
+                    return true;
+                }
+            }
+
+            return false;
+        }
     }
 }
