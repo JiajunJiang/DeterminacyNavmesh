@@ -64,7 +64,7 @@ public class NewBehaviourScript
         }
 
         var lineCount = new Dictionary<LineSegment, int>();
-        VisitTriangle((a, b, c) =>
+        CalculateTriangle((a, b, c) =>
         {
             var ab = new LineSegment(a, b);
             var bc = new LineSegment(b, c);
@@ -128,7 +128,7 @@ public class NewBehaviourScript
         AssetDatabase.Refresh();
     }
 
-    static void VisitTriangle(Action<int, int, int> action)
+    static void CalculateTriangle(Action<int, int, int> action)
     {
         Debug.Log(rawMeshIndices.Length);
         for (int i = 0; i < rawMeshIndices.Length; i += 3)

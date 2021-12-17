@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using DefaultNamespace;
 using UnityEngine;
 
 public struct Point3D : IEquatable<Point3D>
@@ -8,6 +9,10 @@ public struct Point3D : IEquatable<Point3D>
     public long x;
     public long y;
     public long z;
+    
+    public long Magnitude => FixedMath.Sqrt(x * x + y * y + z * z);
+    
+    public Point2D XZ => new Point2D(x, z);
 
     public Point3D(long x, long y, long z)
     {
@@ -71,7 +76,7 @@ public struct Point3D : IEquatable<Point3D>
             l.x * r.y - l.y * r.x
         );
     }
-
+    
     public bool Equals(Point3D other)
     {
         return x == other.x && y == other.y && z == other.z;
