@@ -30,10 +30,18 @@ namespace DefaultNamespace
 
         public List<Point3D> path;
 
+        /// <summary>
+        /// 是否在移动
+        /// </summary>
         public bool IsMove
         {
             get { return totalLength != 0; }
         }
+
+        /// <summary>
+        /// 暂停移动 
+        /// </summary>
+        public bool Pause { get; set; }
 
         public void SetDestination(Point3D dest)
         {
@@ -61,6 +69,13 @@ namespace DefaultNamespace
         {
             Localtion = loca;
             Destination = loca;
+            length = 0;
+            totalLength = 0;
+            path = null;
+        }
+
+        public void Stop()
+        {
             length = 0;
             totalLength = 0;
             path = null;
