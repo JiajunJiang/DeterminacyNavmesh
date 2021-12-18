@@ -14,31 +14,55 @@ namespace DefaultNamespace
         public int Speed = 5000;
         public int FramePerSpeed = 25;
         private int length;
+        private long totalLength = 0;
 
         /// <summary>
         /// 逻辑层目的地位置
         /// </summary>
-        public Point3D destination { get; private set; }
+        public Point3D Destination { get; private set; }
 
         /// <summary>
         /// 逻辑层当前位置
         /// </summary>
-        public Point3D localtion { get; private set; }
+        public Point3D Localtion { get; private set; }
+        
+        public Point3D Direction { get; private set; }
 
         public List<Point3D> path;
 
+        public bool IsMove
+        {
+            get { return totalLength != 0; }
+        }
+
         public void SetDestination(Point3D dest)
         {
-            destination = dest;
+            Destination = dest;
             length = 0;
-            path = NavmeshSystem.Instance.CalculatePath(localtion, destination);
+            path = NavmeshSystem.Instance.CalculatePath(Localtion, Destination);
+            CalculateTotalLength();
+        }
+
+        private void CalculateTotalLength()
+        {
+            if (path?.Count >= 2)
+            {
+                for (int i = 1; i < path.Count; i++)
+                {
+                    var secLen = (path[i] - path[i - 1]).Magnitude;
+                    totalLength += secLen;
+                }
+
+                Debug.Log(totalLength);
+            }
         }
 
         public void SetLocation(Point3D loca)
         {
-            localtion = loca;
-            destination = loca;
+            Localtion = loca;
+            Destination = loca;
             length = 0;
+            totalLength = 0;
             path = null;
         }
 
@@ -46,20 +70,29 @@ namespace DefaultNamespace
         {
             length += Speed / FramePerSpeed;
             long len = 0;
+            if (totalLength != 0 && length > totalLength)
+            {
+                Localtion = Destination;
+                totalLength = 0;
+                path = null;
+            }
+
             if (path?.Count >= 2)
                 for (int i = 1; i < path.Count; i++)
                 {
                     var secLen = (path[i] - path[i - 1]).Magnitude;
                     if (len + secLen > length)
                     {
-                        localtion = path[i - 1] + (path[i] - path[i - 1]) * (length - len) / secLen;
+                        Localtion = path[i - 1] + (path[i] - path[i - 1]) * (length - len) / secLen;
                         break;
                     }
 
                     len += secLen;
                 }
 
-            var pos = localtion.ToUnityVector3() / NavmeshSystem.Precision;
+            var pos = Localtion.ToUnityVector3() / Precision;
+
+            Direction = new Point3D((transform.position - pos) * Precision);
 
             //todo 贴地
             transform.position = pos;

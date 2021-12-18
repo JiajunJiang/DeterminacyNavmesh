@@ -46,7 +46,7 @@ public class Test : MonoBehaviour
             RaycastHit hit;
             if (Physics.Raycast(ray, out hit))
             {
-                if (NavmeshSystem.Instance.IsLineInsideMesh(agent.localtion,
+                if (NavmeshSystem.Instance.IsLineInsideMesh(agent.Localtion,
                     new Point3D(hit.point * NavmeshSystem.Precision), ref crossP1, ref crossP2))
                 {
                     
