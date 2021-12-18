@@ -60,8 +60,6 @@ namespace DefaultNamespace
                     var secLen = (path[i] - path[i - 1]).Magnitude;
                     totalLength += secLen;
                 }
-
-                Debug.Log(totalLength);
             }
         }
 

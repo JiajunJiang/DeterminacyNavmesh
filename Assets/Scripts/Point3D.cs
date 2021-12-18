@@ -27,6 +27,13 @@ public struct Point3D : IEquatable<Point3D>
         this.y = (int) vector3.y;
         this.z = (int) vector3.z;
     }
+    
+    public Point3D(Point2D point2D)
+    {
+        this.x =  point2D.x;
+        this.y =  0;
+        this.z =  point2D.y;
+    }
 
     public static Point3D operator +(Point3D l, Point3D r)
     {
@@ -90,5 +97,10 @@ public struct Point3D : IEquatable<Point3D>
     public override string ToString()
     {
         return $"({x},{y},{z})";
+    }
+
+    public long SqrMagnitude()
+    {
+        return x * x + y * y + z * z;
     }
 }

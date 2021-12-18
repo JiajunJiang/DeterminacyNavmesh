@@ -40,21 +40,64 @@ public class Test : MonoBehaviour
             }
         }
 
+        //测试闪现
         if (Input.GetKey(KeyCode.LeftControl) && Input.GetMouseButtonDown(0))
         {
             var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
             if (Physics.Raycast(ray, out hit))
             {
-                if (NavmeshSystem.Instance.IsLineInsideMesh(agent.Localtion,
-                    new Point3D(hit.point * NavmeshSystem.Precision), ref crossP1, ref crossP2))
+                var hitPoint = new Point3D(hit.point * NavmeshSystem.Precision);
+                if (NavmeshSystem.Instance.IsPointInMesh(hitPoint,out var index))
                 {
-                    
+                    agent.SetLocation(hitPoint);
                 }
-
-                // agent.SetLocation(new Point3D(hit.point * NavmeshSystem.Precision));
+                else
+                {
+                    if (NavmeshSystem.Instance.IsLineInsideMesh(agent.Localtion,
+                        hitPoint,true, ref crossP1, ref crossP2))
+                    {
+                        var intrPos = new Point2D();
+                        SegmentsInterPoint(agent.Localtion.XZ, hitPoint.XZ, crossP1, crossP2, ref intrPos);
+                        Debug.Log(intrPos.ToString());
+                        agent.SetLocation(new Point3D(intrPos));
+                    }
+                }
             }
         }
+    }
+    
+    public static bool SegmentsInterPoint(Point2D a, Point2D b, Point2D c, Point2D d, ref Point2D IntrPos)
+    {
+        //v1×v2=x1y2-y1x2 
+        Point2D ab = b - a;
+        Point2D ac = c - a;
+        long abXac = Point2D.Cross(ab,ac);
+
+        Point2D ad = d - a;
+        long abXad = Point2D.Cross(ab, ad);
+
+        if (abXac * abXad >= 0)
+        {
+            return false;
+        }
+
+        Point2D cd = d - c;
+        Point2D ca = a - c;
+        Point2D cb = b - c;
+
+        long cdXca = Point2D.Cross(cd, ca);
+        long cdXcb = Point2D.Cross(cd, cb);
+        if (cdXca * cdXcb >= 0)
+        {
+            return false;
+        }
+        //计算交点坐标  
+        long dx = Point2D.Cross(a -c, d -c) * (b.x - a.x) / Point2D.Cross (d-c,b-a);
+        long dy = Point2D.Cross(a -c, d -c) * (b.y - a.y) / Point2D.Cross (d-c,b-a);
+
+        IntrPos = new Point2D(a.x + dx, a.y + dy);
+        return true;
     }
 
     /// <summary>

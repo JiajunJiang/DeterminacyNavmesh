@@ -331,10 +331,13 @@ namespace DefaultNamespace
             return true;
         }
         
-        public bool IsLineInsideMesh(Point3D p1, Point3D p2,ref Point2D outP1,ref Point2D outP2)
+        
+        public bool IsLineInsideMesh(Point3D p1, Point3D p2,bool first,ref Point2D outP1,ref Point2D outP2)
         {
             outP1 = new Point2D();
             outP2 = new Point2D();
+
+            bool result = false;
             
             for (int i = 0; i < lines.Length; i += 2)
             {
@@ -342,11 +345,15 @@ namespace DefaultNamespace
                 {
                     outP1 = vertices[lines[i + 0]].XZ;
                     outP2 = vertices[lines[i + 1]].XZ;
-                    return true;
+                    if (first) //return first line
+                    {
+                        result = true;
+                        return true;
+                    }
                 }
             }
 
-            return false;
+            return result;
         }
     }
 }
