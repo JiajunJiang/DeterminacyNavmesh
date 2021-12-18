@@ -117,6 +117,8 @@ namespace DefaultNamespace
             var nodeFrom = nodes[startTriangleIndex / 3];
             var nodeTo = nodes[endTriangleIndex / 3];
             var nodePath = AStarPathSearch(nodeFrom, nodeTo);
+            if (nodePath == null)
+                return null;//if return null,it means some node not connect
             return OptimizePath(nodePath, from, to);
         }
 
