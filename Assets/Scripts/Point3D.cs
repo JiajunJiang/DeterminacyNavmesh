@@ -70,6 +70,16 @@ public struct Point3D : IEquatable<Point3D>
         return new Point3D(-l.x, -l.y, -l.z);
     }
 
+    public static bool operator ==(Point3D l, Point3D r)
+    {
+        long x = l.x - r.x;
+        long y = l.y - r.y;
+        long z = l.z - r.z;
+        return x * x + y * y + z * z == 0;
+    }
+
+    public static bool operator !=(Point3D l, Point3D r) => !(l == r);
+
     public static long Dot(Point3D l, Point3D r)
     {
         return l.x * r.x + l.y * r.y + l.z * r.z;
@@ -82,6 +92,28 @@ public struct Point3D : IEquatable<Point3D>
             l.z * r.x - l.x * r.z,
             l.x * r.y - l.y * r.x
         );
+    }
+
+    public void Scale(Point3D scale)
+    {
+        this.x *= scale.x;
+        this.y *= scale.y;
+        this.z *= scale.z;
+    }
+
+    public Point3D Normalize(Point3D value)
+    {
+        return Magnitude > 0 ? value / Magnitude : Zero;
+    }
+
+    public long SqrMagnitude()
+    {
+        return this.x * this.x + this.y * this.y + this.z * this.z;
+    }
+    
+    public override bool Equals(object other)
+    {
+        return other is Point3D && this.Equals(other);
     }
 
     public bool Equals(Point3D other)
@@ -99,8 +131,10 @@ public struct Point3D : IEquatable<Point3D>
         return $"({x},{y},{z})";
     }
 
-    public long SqrMagnitude()
-    {
-        return x * x + y * y + z * z;
-    }
+    private static readonly Point3D ZeroVector = new Point3D(0, 0, 0);
+    private static readonly Point3D OneVector = new Point3D(1, 1, 1);
+    
+    public static Point3D Zero => Point3D.ZeroVector;
+
+    public static Point3D One => Point3D.OneVector;
 }

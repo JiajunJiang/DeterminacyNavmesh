@@ -40,6 +40,15 @@ namespace DefaultNamespace
             return new Point2D(-l.x, -l.y);
         }
 
+        public static bool operator ==(Point2D l, Point2D r)
+        {
+            long x = l.x - r.x;
+            long y = l.y - r.y;
+            return x * x + y * y == 0;
+        }
+
+        public static bool operator !=(Point2D l, Point2D r) => !(l == r);
+
         public static long Dot(Point2D l, Point2D r)
         {
             return l.x * r.x + l.y * r.y;
@@ -59,10 +68,17 @@ namespace DefaultNamespace
         {
             return x == other.x && y == other.y;
         }
-        
+
         public override string ToString()
         {
             return $"({x},{y})";
         }
+
+        private static readonly Point2D ZeroVector = new Point2D(0, 0);
+        private static readonly Point2D OneVector = new Point2D(1, 1);
+
+        public static Point2D Zero => Point2D.ZeroVector;
+
+        public static Point2D One => Point2D.OneVector;
     }
 }
