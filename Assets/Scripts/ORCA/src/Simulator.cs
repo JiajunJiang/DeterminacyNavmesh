@@ -128,7 +128,7 @@ namespace RVO
          * <param name="position">The two-dimensional starting position of this
          * agent.</param>
          */
-        public int addAgent(Vector2 position)
+        public int addAgent(Point2D position)
         {
             if (defaultAgent_ == null)
             {
@@ -184,7 +184,7 @@ namespace RVO
          * <param name="velocity">The initial two-dimensional linear velocity of
          * this agent.</param>
          */
-        public int addAgent(Vector2 position, float neighborDist, int maxNeighbors, float timeHorizon, float timeHorizonObst, float radius, float maxSpeed, Vector2 velocity)
+        public int addAgent(Point2D position, float neighborDist, int maxNeighbors, float timeHorizon, float timeHorizonObst, float radius, float maxSpeed, Point2D velocity)
         {
             Agent agent = new Agent();
             agent.id_ = agents_.Count;
@@ -214,7 +214,7 @@ namespace RVO
          * the environment, the vertices should be listed in clockwise order.
          * </remarks>
          */
-        public int addObstacle(IList<Vector2> vertices)
+        public int addObstacle(IList<Point2D> vertices)
         {
             if (vertices.Count < 2)
             {
@@ -449,7 +449,7 @@ namespace RVO
          * <param name="agentNo">The number of the agent whose two-dimensional
          * position is to be retrieved.</param>
          */
-        public Vector2 getAgentPosition(int agentNo)
+        public Point2D getAgentPosition(int agentNo)
         {
             return agents_[agentNo].position_;
         }
@@ -464,7 +464,7 @@ namespace RVO
          * <param name="agentNo">The number of the agent whose two-dimensional
          * preferred velocity is to be retrieved.</param>
          */
-        public Vector2 getAgentPrefVelocity(int agentNo)
+        public Point2D getAgentPrefVelocity(int agentNo)
         {
             return agents_[agentNo].prefVelocity_;
         }
@@ -520,7 +520,7 @@ namespace RVO
          * <param name="agentNo">The number of the agent whose two-dimensional
          * linear velocity is to be retrieved.</param>
          */
-        public Vector2 getAgentVelocity(int agentNo)
+        public Point2D getAgentVelocity(int agentNo)
         {
             return agents_[agentNo].velocity_;
         }
@@ -577,7 +577,7 @@ namespace RVO
          * <param name="vertexNo">The number of the obstacle vertex to be
          * retrieved.</param>
          */
-        public Vector2 getObstacleVertex(int vertexNo)
+        public Point2D getObstacleVertex(int vertexNo)
         {
             return obstacles_[vertexNo].point_;
         }
@@ -648,7 +648,7 @@ namespace RVO
          * the two points and the obstacles in order for the points to be
          * mutually visible (optional). Must be non-negative.</param>
          */
-        public bool queryVisibility(Vector2 point1, Vector2 point2, float radius)
+        public bool queryVisibility(Point2D point1, Point2D point2, float radius)
         {
             return kdTree_.queryVisibility(point1, point2, radius);
         }
@@ -685,7 +685,7 @@ namespace RVO
          * <param name="velocity">The default initial two-dimensional linear
          * velocity of a new agent.</param>
          */
-        public void setAgentDefaults(float neighborDist, int maxNeighbors, float timeHorizon, float timeHorizonObst, float radius, float maxSpeed, Vector2 velocity)
+        public void setAgentDefaults(float neighborDist, int maxNeighbors, float timeHorizon, float timeHorizonObst, float radius, float maxSpeed, Point2D velocity)
         {
             if (defaultAgent_ == null)
             {
@@ -751,7 +751,7 @@ namespace RVO
          * <param name="position">The replacement of the two-dimensional
          * position.</param>
          */
-        public void setAgentPosition(int agentNo, Vector2 position)
+        public void setAgentPosition(int agentNo, Point2D position)
         {
             agents_[agentNo].position_ = position;
         }
@@ -765,7 +765,7 @@ namespace RVO
          * <param name="prefVelocity">The replacement of the two-dimensional
          * preferred velocity.</param>
          */
-        public void setAgentPrefVelocity(int agentNo, Vector2 prefVelocity)
+        public void setAgentPrefVelocity(int agentNo, Point2D prefVelocity)
         {
             agents_[agentNo].prefVelocity_ = prefVelocity;
         }
@@ -824,7 +824,7 @@ namespace RVO
          * <param name="velocity">The replacement two-dimensional linear
          * velocity.</param>
          */
-        public void setAgentVelocity(int agentNo, Vector2 velocity)
+        public void setAgentVelocity(int agentNo, Point2D velocity)
         {
             agents_[agentNo].velocity_ = velocity;
         }

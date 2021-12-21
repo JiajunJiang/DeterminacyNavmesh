@@ -40,8 +40,8 @@ namespace RVO
 
         internal Obstacle next_;
         internal Obstacle previous_;
-        internal Vector2 direction_;
-        internal Vector2 point_;
+        internal Point2D direction_;
+        internal Point2D point_;
         internal int id_;
         internal bool convex_;
     }

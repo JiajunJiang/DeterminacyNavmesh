@@ -37,7 +37,7 @@ namespace RVO
      */
     public struct Line
     {
-        public Vector2 direction;
-        public Vector2 point;
+        public Point2D direction;
+        public Point2D point;
     }
 }
