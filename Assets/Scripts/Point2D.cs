@@ -46,6 +46,26 @@ namespace DefaultNamespace
             long y = l.y - r.y;
             return x * x + y * y == 0;
         }
+        
+        public static bool operator <(Point2D l, Point2D r)
+        {
+            return l.x < r.x || !(r.x < l.x) && l.y < r.y;
+        }
+        
+        public static bool operator >(Point2D l, Point2D r)
+        {
+            return !(l <= r);
+        }
+        
+        public static bool operator <=(Point2D l, Point2D r)
+        {
+            return (l.x == r.x && l.y == r.y) || l < r;
+        }
+        
+        public static bool operator >=(Point2D l, Point2D r)
+        {
+            return !(l < r);
+        }
 
         public static bool operator !=(Point2D l, Point2D r) => !(l == r);
 
