@@ -63,6 +63,13 @@ namespace DefaultNamespace
         {
             return l.x * r.z - r.x * l.z;
         }
+        
+        public static long Distance(Point2D l, Point2D r)
+        {
+            long num1 = l.x - r.x;
+            long num2 = l.y - r.y;
+            return FixedMath.Sqrt(num1 * num1 + num2 * num2);
+        }
 
         public bool Equals(Point2D other)
         {

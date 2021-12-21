@@ -94,6 +94,14 @@ public struct Point3D : IEquatable<Point3D>
         );
     }
 
+    public static long Distance(Point3D l, Point3D r)
+    {
+        long num1 = l.x - r.x;
+        long num2 = l.y - r.y;
+        long num3 = l.z - r.z;
+        return FixedMath.Sqrt(num1 * num1 + num2 * num2 + num3 * num3);
+    }
+
     public void Scale(Point3D scale)
     {
         this.x *= scale.x;
