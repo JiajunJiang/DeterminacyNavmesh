@@ -73,14 +73,14 @@ namespace DefaultNamespace
             Destination = loca;
             length = 0;
             totalLength = 0;
-            path = null;
+            path.Clear();
         }
 
         public void Stop()
         {
             length = 0;
             totalLength = 0;
-            path = null;
+            path.Clear();
         }
 
         private void FixedUpdate()
@@ -91,7 +91,7 @@ namespace DefaultNamespace
             {
                 Localtion = Destination;
                 totalLength = 0;
-                path = null;
+                path.Clear();
             }
 
             if (path?.Count >= 2)
