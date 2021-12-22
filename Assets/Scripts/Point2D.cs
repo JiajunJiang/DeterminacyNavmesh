@@ -29,8 +29,23 @@ namespace DefaultNamespace
         {
             return new Point2D(p.x * m, p.y * m);
         }
+        
+        public static Point2D operator *(Point2D p, long m)
+        {
+            return new Point2D(p.x * m, p.y * m);
+        }
+        
+        public static Point2D operator *(Point2D l, Point2D r)
+        {
+            return new Point2D(l.x * r.x, l.y * r.y);
+        }
 
         public static Point2D operator /(Point2D p, int m)
+        {
+            return new Point2D(p.x / m, p.y / m);
+        }
+        
+        public static Point2D operator /(Point2D p, long m)
         {
             return new Point2D(p.x / m, p.y / m);
         }

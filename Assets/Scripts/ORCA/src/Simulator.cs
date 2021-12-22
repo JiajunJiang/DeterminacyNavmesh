@@ -33,6 +33,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading;
+using DefaultNamespace;
 
 namespace RVO
 {
@@ -100,7 +101,7 @@ namespace RVO
         internal IList<Agent> agents_;
         internal IList<Obstacle> obstacles_;
         internal KdTree kdTree_;
-        internal float timeStep_;
+        internal int timeStep_; //float * 100
 
         private static Simulator instance_ = new Simulator();
 
@@ -184,7 +185,7 @@ namespace RVO
          * <param name="velocity">The initial two-dimensional linear velocity of
          * this agent.</param>
          */
-        public int addAgent(Point2D position, float neighborDist, int maxNeighbors, float timeHorizon, float timeHorizonObst, float radius, float maxSpeed, Point2D velocity)
+        public int addAgent(Point2D position, int neighborDist, int maxNeighbors, int timeHorizon, int timeHorizonObst, int radius, int maxSpeed, Point2D velocity)
         {
             Agent agent = new Agent();
             agent.id_ = agents_.Count;
@@ -267,8 +268,8 @@ namespace RVO
             defaultAgent_ = null;
             kdTree_ = new KdTree();
             obstacles_ = new List<Obstacle>();
-            globalTime_ = 0.0f;
-            timeStep_ = 0.1f;
+            globalTime_ = 0;
+            timeStep_ = 10;
 
             SetNumWorkers(0);
         }
@@ -648,7 +649,7 @@ namespace RVO
          * the two points and the obstacles in order for the points to be
          * mutually visible (optional). Must be non-negative.</param>
          */
-        public bool queryVisibility(Point2D point1, Point2D point2, float radius)
+        public bool queryVisibility(Point2D point1, Point2D point2, int radius)
         {
             return kdTree_.queryVisibility(point1, point2, radius);
         }
@@ -685,7 +686,7 @@ namespace RVO
          * <param name="velocity">The default initial two-dimensional linear
          * velocity of a new agent.</param>
          */
-        public void setAgentDefaults(float neighborDist, int maxNeighbors, float timeHorizon, float timeHorizonObst, float radius, float maxSpeed, Point2D velocity)
+        public void setAgentDefaults(int neighborDist, int maxNeighbors, int timeHorizon, int timeHorizonObst, int radius, int maxSpeed, Point2D velocity)
         {
             if (defaultAgent_ == null)
             {
@@ -723,7 +724,7 @@ namespace RVO
          * <param name="maxSpeed">The replacement maximum speed. Must be
          * non-negative.</param>
          */
-        public void setAgentMaxSpeed(int agentNo, float maxSpeed)
+        public void setAgentMaxSpeed(int agentNo, int maxSpeed)
         {
             agents_[agentNo].maxSpeed_ = maxSpeed;
         }
@@ -737,7 +738,7 @@ namespace RVO
          * <param name="neighborDist">The replacement maximum neighbor distance.
          * Must be non-negative.</param>
          */
-        public void setAgentNeighborDist(int agentNo, float neighborDist)
+        public void setAgentNeighborDist(int agentNo, int neighborDist)
         {
             agents_[agentNo].neighborDist_ = neighborDist;
         }
@@ -778,12 +779,12 @@ namespace RVO
          * <param name="radius">The replacement radius. Must be non-negative.
          * </param>
          */
-        public void setAgentRadius(int agentNo, float radius)
+        public void setAgentRadius(int agentNo, int radius)
         {
             agents_[agentNo].radius_ = radius;
         }
 
-        public void setAgentMass(int agentNo, float mass_) {
+        public void setAgentMass(int agentNo, int mass_) {
             agents_[agentNo].mass_ = mass_;
         }
 
@@ -796,7 +797,7 @@ namespace RVO
          * <param name="timeHorizon">The replacement time horizon with respect
          * to other agents. Must be positive.</param>
          */
-        public void setAgentTimeHorizon(int agentNo, float timeHorizon)
+        public void setAgentTimeHorizon(int agentNo, int timeHorizon)
         {
             agents_[agentNo].timeHorizon_ = timeHorizon;
         }
@@ -810,7 +811,7 @@ namespace RVO
          * <param name="timeHorizonObst">The replacement time horizon with
          * respect to obstacles. Must be positive.</param>
          */
-        public void setAgentTimeHorizonObst(int agentNo, float timeHorizonObst)
+        public void setAgentTimeHorizonObst(int agentNo, int timeHorizonObst)
         {
             agents_[agentNo].timeHorizonObst_ = timeHorizonObst;
         }
@@ -862,7 +863,7 @@ namespace RVO
          * <param name="timeStep">The time step of the simulation. Must be
          * positive.</param>
          */
-        public void setTimeStep(float timeStep)
+        public void setTimeStep(int timeStep)
         {
             timeStep_ = timeStep;
         }

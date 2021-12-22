@@ -31,6 +31,7 @@
  */
 
 using System;
+using DefaultNamespace;
 
 namespace RVO
 {
@@ -43,19 +44,21 @@ namespace RVO
         /**
          * <summary>A sufficiently small positive number.</summary>
          */
-        internal const float RVO_EPSILON = 0.00001f;
+        // internal const float RVO_EPSILON = 0.00001f;
 
+        internal const int RVO_EPSILON = 0;
+        
         /**
          * <summary>Computes the length of a specified two-dimensional vector.
          * </summary>
          *
-         * <param name="vector">The two-dimensional vector whose length is to be
+         * <param name="point">The two-dimensional vector whose length is to be
          * computed.</param>
          * <returns>The length of the two-dimensional vector.</returns>
          */
-        public static float abs(Point2D vector)
+        public static long abs(Point2D point)
         {
-            return sqrt(absSq(vector));
+            return point.Magnitude;
         }
 
         /**
@@ -64,12 +67,12 @@ namespace RVO
          *
          * <returns>The squared length of the two-dimensional vector.</returns>
          *
-         * <param name="vector">The two-dimensional vector whose squared length
+         * <param name="point">The two-dimensional vector whose squared length
          * is to be computed.</param>
          */
-        public static float absSq(Point2D vector)
+        public static long absSq(Point2D point)
         {
-            return vector * vector;
+            return point.x * point.x + point.y * point.y;
         }
 
         /**
@@ -96,12 +99,12 @@ namespace RVO
          *
          * <param name="vector1">The top row of the two-dimensional square
          * matrix.</param>
-         * <param name="point2D">The bottom row of the two-dimensional square
+         * <param name="vector2">The bottom row of the two-dimensional square
          * matrix.</param>
          */
-        internal static float det(Point2D vector1, Point2D point2D)
+        internal static long det(Point2D vector1, Point2D vector2)
         {
-            return vector1.x * point2D.y - vector1.y * point2D.x;
+            return Point2D.Cross(vector1, vector2);
         }
 
         /**
@@ -111,38 +114,30 @@ namespace RVO
          * <returns>The squared distance from the line segment to the point.
          * </returns>
          *
-         * <param name="vector1">The first endpoint of the line segment.</param>
-         * <param name="point2D">The second endpoint of the line segment.
+         * <param name="p1">The first endpoint of the line segment.</param>
+         * <param name="p2">The second endpoint of the line segment.
          * </param>
-         * <param name="vector3">The point to which the squared distance is to
+         * <param name="p3">The point to which the squared distance is to
          * be calculated.</param>
          */
-        internal static float distSqPointLineSegment(Point2D vector1, Point2D point2D, Point2D vector3)
+        internal static long distSqPointLineSegment(Point2D p1, Point2D p2, Point2D p3)
         {
-            float r = ((vector3 - vector1) * (point2D - vector1)) / absSq(point2D - vector1);
+            long r = ((p3 - p1) * (p2 - p1)).Magnitude / absSq(p2 - p1);
 
             if (r < 0.0f)
             {
-                return absSq(vector3 - vector1);
+                return absSq(p3 - p1);
             }
 
             if (r > 1.0f)
             {
-                return absSq(vector3 - point2D);
+                return absSq(p3 - p2);
             }
 
-            return absSq(vector3 - (vector1 + r * (point2D - vector1)));
+            return absSq(p3 - (p1 + (p2 - p1) * r));
         }
 
-        /**
-         * <summary>Computes the absolute value of a float.</summary>
-         *
-         * <returns>The absolute value of the float.</returns>
-         *
-         * <param name="scalar">The float of which to compute the absolute
-         * value.</param>
-         */
-        internal static float fabs(float scalar)
+        internal static long longAbs(long scalar)
         {
             return Math.Abs(scalar);
         }
@@ -159,34 +154,19 @@ namespace RVO
          * <param name="c">The point to which the signed distance is to be
          * calculated.</param>
          */
-        internal static float leftOf(Point2D a, Point2D b, Point2D c)
+        internal static long leftOf(Point2D a, Point2D b, Point2D c)
         {
             return det(a - c, b - a);
         }
 
-        /**
-         * <summary>Computes the square of a float.</summary>
-         *
-         * <returns>The square of the float.</returns>
-         *
-         * <param name="scalar">The float to be squared.</param>
-         */
-        internal static float sqr(float scalar)
+        internal static long sqr(long scalar)
         {
             return scalar * scalar;
         }
 
-        /**
-         * <summary>Computes the square root of a float.</summary>
-         *
-         * <returns>The square root of the float.</returns>
-         *
-         * <param name="scalar">The float of which to compute the square root.
-         * </param>
-         */
-        internal static float sqrt(float scalar)
+        internal static long sqrt(long scalar)
         {
-            return (float)Math.Sqrt(scalar);
+            return (long)Math.Sqrt(scalar);
         }
     }
 }
