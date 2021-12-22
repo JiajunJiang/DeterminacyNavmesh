@@ -31,7 +31,7 @@ namespace DefaultNamespace
         
         public Point3D Direction { get; private set; }
 
-        public List<Point3D> path;
+        public List<Point3D> path = new List<Point3D>(64);
 
         /// <summary>
         /// 是否在移动
@@ -45,18 +45,22 @@ namespace DefaultNamespace
         /// 暂停移动 
         /// </summary>
         public bool Pause { get; set; }
+        
+        
 
         public void SetDestination(Point3D dest)
         {
             totalLength = 0;
             Destination = dest;
             length = 0;
-            path = NavmeshSystem.Instance.CalculatePath(Localtion, Destination);
+            path.Clear();
+            path.AddRange(NavmeshSystem.Instance.CalculatePath(Localtion, Destination));
             CalculateTotalLength();
         }
 
         private void CalculateTotalLength()
         {
+            totalLength = 0;
             if (path?.Count >= 2)
             {
                 for (int i = 1; i < path.Count; i++)
