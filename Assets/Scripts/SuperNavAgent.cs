@@ -16,6 +16,9 @@ namespace DefaultNamespace
         private int length;
         private long totalLength = 0;
 
+        public int Radius = 0;
+        
+
         /// <summary>
         /// 逻辑层目的地位置
         /// </summary>
@@ -45,6 +48,7 @@ namespace DefaultNamespace
 
         public void SetDestination(Point3D dest)
         {
+            totalLength = 0;
             Destination = dest;
             length = 0;
             path = NavmeshSystem.Instance.CalculatePath(Localtion, Destination);
