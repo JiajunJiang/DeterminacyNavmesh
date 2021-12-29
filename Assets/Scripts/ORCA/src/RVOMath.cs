@@ -31,6 +31,7 @@
  */
 
 using System;
+using FixedMath;
 
 namespace RVO
 {
@@ -40,24 +41,50 @@ namespace RVO
      */
     public struct RVOMath
     {
-        /**
-         * <summary>A sufficiently small positive number.</summary>
-         */
-        internal const float RVO_EPSILON = 0.00001f;
 
         /**
-         * <summary>Computes the length of a specified two-dimensional vector.
-         * </summary>
+         * <summary>Computes the absolute value of a float.</summary>
          *
-         * <param name="vector">The two-dimensional vector whose length is to be
-         * computed.</param>
-         * <returns>The length of the two-dimensional vector.</returns>
+         * <returns>The absolute value of the float.</returns>
+         *
+         * <param name="scalar">The float of which to compute the absolute
+         * value.</param>
          */
-        public static float abs(Vector2 vector)
+        internal static JInt fabs(JInt scalar)
         {
-            return sqrt(absSq(vector));
+            if(scalar < 0)
+            {
+                return -scalar;
+            }
+
+            return scalar;
+        }
+        /**
+        * <summary>Computes the length of a specified two-dimensional vector.
+        * </summary>
+        *
+        * <param name="vector">The two-dimensional vector whose length is to be
+        * computed.</param>
+        * <returns>The length of the two-dimensional vector.</returns>
+        */
+        public static JInt abs(Jint2 vector)
+        {
+            return vector.IntMagnitude ;
         }
 
+        /**
+        * <summary>Computes the normalization of the specified two-dimensional
+        * vector.</summary>
+        *
+        * <returns>The normalization of the two-dimensional vector.</returns>
+        *
+        * <param name="vector">The two-dimensional vector whose normalization
+        * is to be computed.</param>
+        */
+        public static Jint2 normalize(Jint2 vector)
+        {
+            return vector.normalized;
+        }
         /**
          * <summary>Computes the squared length of a specified two-dimensional
          * vector.</summary>
@@ -67,23 +94,14 @@ namespace RVO
          * <param name="vector">The two-dimensional vector whose squared length
          * is to be computed.</param>
          */
-        public static float absSq(Vector2 vector)
+        public static JInt absSq(Jint2 vector)
         {
-            return vector * vector;
+            return  JInt.ToInt((vector.IntX * vector.IntX + vector.IntY * vector.IntY)  * JInt.divscale / Jint2.div2scale);
         }
 
-        /**
-         * <summary>Computes the normalization of the specified two-dimensional
-         * vector.</summary>
-         *
-         * <returns>The normalization of the two-dimensional vector.</returns>
-         *
-         * <param name="vector">The two-dimensional vector whose normalization
-         * is to be computed.</param>
-         */
-        public static Vector2 normalize(Vector2 vector)
+        public static JInt Dot(Jint2 left,Jint2 right)
         {
-            return vector / abs(vector);
+            return JInt.ToInt((left.IntX * right.IntX + left.IntY * right.IntY) * JInt.divscale / Jint2.div2scale);
         }
 
         /**
@@ -99,9 +117,9 @@ namespace RVO
          * <param name="vector2">The bottom row of the two-dimensional square
          * matrix.</param>
          */
-        internal static float det(Vector2 vector1, Vector2 vector2)
+        internal static JInt det(Jint2 vector1, Jint2 vector2)
         {
-            return vector1.x_ * vector2.y_ - vector1.y_ * vector2.x_;
+            return JInt.ToInt((vector1.IntX * vector2.IntY - vector1.IntY * vector2.IntX) * JInt.divscale / Jint2.div2scale);
         }
 
         /**
@@ -117,34 +135,21 @@ namespace RVO
          * <param name="vector3">The point to which the squared distance is to
          * be calculated.</param>
          */
-        internal static float distSqPointLineSegment(Vector2 vector1, Vector2 vector2, Vector2 vector3)
+        internal static JInt distSqPointLineSegment(Jint2 vector1, Jint2 vector2, Jint2 vector3)
         {
-            float r = ((vector3 - vector1) * (vector2 - vector1)) / absSq(vector2 - vector1);
+            JInt r = Dot(vector3 - vector1, vector2 - vector1) / absSq(vector2 - vector1);// (v31.IntX * v21.IntX  + v31.IntY * v21.IntY) * KInt.divscale / KInt2.div2scale;
 
-            if (r < 0.0f)
+            if (r < 0)
             {
                 return absSq(vector3 - vector1);
             }
 
-            if (r > 1.0f)
+            if (r > 1)
             {
                 return absSq(vector3 - vector2);
             }
 
             return absSq(vector3 - (vector1 + r * (vector2 - vector1)));
-        }
-
-        /**
-         * <summary>Computes the absolute value of a float.</summary>
-         *
-         * <returns>The absolute value of the float.</returns>
-         *
-         * <param name="scalar">The float of which to compute the absolute
-         * value.</param>
-         */
-        internal static float fabs(float scalar)
-        {
-            return Math.Abs(scalar);
         }
 
         /**
@@ -159,10 +164,23 @@ namespace RVO
          * <param name="c">The point to which the signed distance is to be
          * calculated.</param>
          */
-        internal static float leftOf(Vector2 a, Vector2 b, Vector2 c)
+        internal static JInt leftOf(Jint2 a, Jint2 b, Jint2 c)
         {
             return det(a - c, b - a);
         }
+
+
+        internal static bool RightXZ(JInt3 a, JInt3 b, JInt3 p)
+        {
+            return (b.IntX - a.IntX) * (p.IntZ - a.IntZ) - (p.IntX - a.IntX) * (b.IntZ - a.IntZ) < 0;
+        }
+
+
+        internal static bool IsClockwiseXZ(JInt3 a, JInt3 b, JInt3 c)
+        {
+            return (b.IntX - a.IntX) * (c.IntZ - a.IntZ) - (c.IntX - a.IntX) * (b.IntZ - a.IntZ) < 0;
+        }
+
 
         /**
          * <summary>Computes the square of a float.</summary>
@@ -171,22 +189,19 @@ namespace RVO
          *
          * <param name="scalar">The float to be squared.</param>
          */
-        internal static float sqr(float scalar)
+        internal static int sqr(int scalar)
         {
             return scalar * scalar;
         }
 
-        /**
-         * <summary>Computes the square root of a float.</summary>
-         *
-         * <returns>The square root of the float.</returns>
-         *
-         * <param name="scalar">The float of which to compute the square root.
-         * </param>
-         */
-        internal static float sqrt(float scalar)
+        internal static JInt sqr(JInt scalar)
         {
-            return (float)Math.Sqrt(scalar);
+            return scalar.IntSqr;
+        }
+
+        internal static JInt sqrt(JInt scalar)
+        {
+            return scalar.IntSqrt;
         }
     }
 }

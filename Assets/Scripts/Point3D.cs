@@ -10,7 +10,7 @@ public struct Point3D : IEquatable<Point3D>
     public long y;
     public long z;
 
-    public long Magnitude => FixedMath.Sqrt(x * x + y * y + z * z);
+    public long Magnitude => DefaultNamespace.FixedMath.Sqrt(x * x + y * y + z * z);
 
     public Point2D XZ => new Point2D(x, z);
 
@@ -99,7 +99,7 @@ public struct Point3D : IEquatable<Point3D>
         long num1 = l.x - r.x;
         long num2 = l.y - r.y;
         long num3 = l.z - r.z;
-        return FixedMath.Sqrt(num1 * num1 + num2 * num2 + num3 * num3);
+        return DefaultNamespace.FixedMath.Sqrt(num1 * num1 + num2 * num2 + num3 * num3);
     }
 
     public void Scale(Point3D scale)

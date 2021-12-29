@@ -29,6 +29,9 @@
  *
  * <http://gamma.cs.unc.edu/RVO2/>
  */
+using System;
+using FixedMath;
+using UnityEngine;
 
 namespace RVO
 {
@@ -37,7 +40,23 @@ namespace RVO
      */
     public struct Line
     {
-        public Vector2 direction;
-        public Vector2 point;
+        private Jint2 _dir;
+        public Jint2 direction
+        {
+            get
+            {
+                return _dir;
+            }
+            set
+            {
+                if(Math.Abs(value.x) > 100 || Math.Abs(value.y) > 100)
+                {
+                    Debug.LogError("!!over");
+                }
+
+                _dir = value;
+            }
+        }
+        public Jint2 point;
     }
 }

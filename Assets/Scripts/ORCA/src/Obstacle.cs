@@ -30,18 +30,21 @@
  * <http://gamma.cs.unc.edu/RVO2/>
  */
 
+
+using FixedMath;
+
 namespace RVO
 {
     /**
      * <summary>Defines static obstacles in the simulation.</summary>
      */
-    internal class Obstacle
+    public class Obstacle
     {
 
         internal Obstacle next_;
         internal Obstacle previous_;
-        internal Vector2 direction_;
-        internal Vector2 point_;
+        internal Jint2 direction_;
+        internal Jint2 point_;
         internal int id_;
         internal bool convex_;
     }
